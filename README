@@ -1,0 +1,87 @@
+NAME
+    rinetd.pl - tcp redirection server
+
+SYNOPSIS
+    rinetd.pl [ -c configfile ] [ -f ] { start | stop | reload | restart |
+    check }
+
+DESCRIPTION
+    Rinetd.pl forwards tcp connections from one IP address and port to
+    another. rinetd.pl can forward from multiple ports simultaneously as
+    defined in a config file (/etc/rinetd.pl.conf).
+
+    Rinetd.pl is called "rinetd.pl" instead of simply "rinetd" so as to not
+    be confused with Thomas Boutell's "rinetd" program.
+
+    Exactly one of imperitive is required on the command line:
+
+    start    Start a new rinetd server if there isn't one already running.
+
+    stop     Stop a running rinetd server
+
+    restart  Stop the running rinetd server (if one is running). Start a new
+             rinetd server.
+
+    reload   Reconfigure the running rinetd server. Start a new server if
+             none is running.
+
+    The command line options are:
+
+    -c file  Specify an alternative configuration file. Multiple rinetd.pl
+             servers can run simultaneously if they have different config
+             files.
+
+    -f       Run in the foreground. Normally rinetd.pl detaches itself and
+             runs as a deamon. When it runs as a daemon it redirects its
+             output through the logger(1) program.
+
+FORWARDING RULES
+    The format for forwarding rules (in the config file) is:
+
+     from-ip-address from-port to-ip-address to-port
+
+    IP addresses and ports can be numeric or named. Use 0.0.0.0 for
+    listening on all IP addresses.
+
+FILTER RULES
+    Allow and deny rules can control what IP addresses are allowed to use
+    the server.
+
+    The format of rules is:
+
+     allow|deny netblock
+
+    Filters that follow a forwarding rule apply to that forwarding rule
+    only.
+
+    Filters that preceed any forwarding rules apply to all forwarding rules
+    if no per-forwarding rule filter matches.
+
+    Filters are not ordered: the most specific filter (smallest network
+    block) that matches is the one that is used.
+
+    Filter rules may be indented for clarity. Filter rules must be numeric
+    -- hostnames are not allowed.
+
+EXAMPLE CONFIG
+     # We have to start with the global access 
+     # control list.
+     # The order of the rules does not matter.
+
+     deny   any             # '0.0.0.0/0' and 'default' work too
+     deny   216.240.32.1 
+     allow  216.240.32/24
+
+     0.0.0.0 8282 idiom.com 23
+
+     allow  216.240.47/24
+     deny   216.240.47.38
+     deny   216.240.32.4
+
+     0.0.0.0 daytime idiom.com daytime # idiom's clock is better
+
+LICENSE
+    Copyright (C) 2005,2006 David Muir Sharnoff <cpan@dave.sharnoff.org>
+    Copyright (C) 2013 Google, Inc. This module may be used/copied/etc on
+    the same terms as Perl itself.
+
