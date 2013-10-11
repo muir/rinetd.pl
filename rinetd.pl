@@ -4,7 +4,7 @@ package IO::Event::rinetd;
 
 my $debug = 0;
 
-$main::VERSION = '1.2';
+$main::VERSION = '1.21';
 
 use strict;
 use IO::Event;
