@@ -19,6 +19,11 @@ WriteMakefile(
 		'rinetd.pl'	=> '$(INST_LIBDIR)/IO/Event/rinetd.pm',
 	},
 	'EXE_FILES'     => ['rinetd.pl'],
+	'META_MERGE'     => {
+		resources  => {
+			repository => 'http://github.com/muir/rinetd.pl',
+		},
+	},
 );
 
 package MY;
